@@ -83,38 +83,6 @@ export default function AlgorithmVisualizer() {
     }, 50); // Adjust this value to change animation speed
   };
 
-  // const togglePlay = (state?: ArrayState, algo?: Algorithm) => {
-  //   if (state && algo) {
-  //     setPlayingStates((prev) => ({ ...prev, [`${state}-${algo}`]: true }));
-  //     setTimeout(() => {
-  //       setPlayingStates((prev) => ({ ...prev, [`${state}-${algo}`]: false }));
-  //     }, 2000);
-  //   } else if (state) {
-  //     algorithms.forEach((a) => {
-  //       setPlayingStates((prev) => ({ ...prev, [`${state}-${a}`]: true }));
-  //       setTimeout(() => {
-  //         setPlayingStates((prev) => ({ ...prev, [`${state}-${a}`]: false }));
-  //       }, 2000);
-  //     });
-  //   } else if (algo) {
-  //     arrayStates.forEach((s) => {
-  //       setPlayingStates((prev) => ({ ...prev, [`${s}-${algo}`]: true }));
-  //       setTimeout(() => {
-  //         setPlayingStates((prev) => ({ ...prev, [`${s}-${algo}`]: false }));
-  //       }, 2000);
-  //     });
-  //   } else {
-  //     arrayStates.forEach((s) => {
-  //       algorithms.forEach((a) => {
-  //         setPlayingStates((prev) => ({ ...prev, [`${s}-${a}`]: true }));
-  //         setTimeout(() => {
-  //           setPlayingStates((prev) => ({ ...prev, [`${s}-${a}`]: false }));
-  //         }, 2000);
-  //       });
-  //     });
-  //   }
-  // };
-  //
   if (!mounted) {
     return (
       <div className="p-4 bg-background min-h-screen flex items-center justify-center">
