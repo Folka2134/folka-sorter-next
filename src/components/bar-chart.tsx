@@ -57,7 +57,7 @@ export function BarChart({
       ref={canvasRef}
       width={150}
       height={100}
-      className="h-full w-full"
+      className="h-full w-[104px]"
     />
   );
 }
