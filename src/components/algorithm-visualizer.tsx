@@ -5,61 +5,123 @@ import { PlayButton } from "./play-button";
 import { BarChart } from "./bar-chart";
 import {
   generateArray,
-  algorithms,
   arrayStates,
-  type Algorithm,
   type ArrayState,
 } from "../../utils/generate-data";
+import {
+  sortingAlgorithms,
+  type SortingAlgorithm,
+} from "../../utils/sortingAlgorithms";
 import { useTheme } from "next-themes";
 
 export default function AlgorithmVisualizer() {
+  const [mounted, setMounted] = useState(false);
   const [playingStates, setPlayingStates] = useState<Record<string, boolean>>(
     {},
   );
   const [visualData, setVisualData] = useState<Record<string, number[]>>({});
-  const { theme } = useTheme();
+  const [sortingSteps, setSortingSteps] = useState<Record<string, number[][]>>(
+    {},
+  );
+  const { resolvedTheme } = useTheme();
+
+  const algorithms = Object.keys(sortingAlgorithms) as SortingAlgorithm[];
 
   useEffect(() => {
-    const data: Record<string, number[]> = {};
-    arrayStates.forEach((state) => {
-      algorithms.forEach((algo) => {
-        data[`${state}-${algo}`] = generateArray(state);
-      });
-    });
-    setVisualData(data);
+    setMounted(true);
   }, []);
 
-  const togglePlay = (state?: ArrayState, algo?: Algorithm) => {
-    if (state && algo) {
-      setPlayingStates((prev) => ({ ...prev, [`${state}-${algo}`]: true }));
-      setTimeout(() => {
-        setPlayingStates((prev) => ({ ...prev, [`${state}-${algo}`]: false }));
-      }, 2000);
-    } else if (state) {
-      algorithms.forEach((a) => {
-        setPlayingStates((prev) => ({ ...prev, [`${state}-${a}`]: true }));
-        setTimeout(() => {
-          setPlayingStates((prev) => ({ ...prev, [`${state}-${a}`]: false }));
-        }, 2000);
-      });
-    } else if (algo) {
-      arrayStates.forEach((s) => {
-        setPlayingStates((prev) => ({ ...prev, [`${s}-${algo}`]: true }));
-        setTimeout(() => {
-          setPlayingStates((prev) => ({ ...prev, [`${s}-${algo}`]: false }));
-        }, 2000);
-      });
-    } else {
-      arrayStates.forEach((s) => {
-        algorithms.forEach((a) => {
-          setPlayingStates((prev) => ({ ...prev, [`${s}-${a}`]: true }));
-          setTimeout(() => {
-            setPlayingStates((prev) => ({ ...prev, [`${s}-${a}`]: false }));
-          }, 2000);
+  useEffect(() => {
+    if (mounted) {
+      const data: Record<string, number[]> = {};
+      arrayStates.forEach((state) => {
+        algorithms.forEach((algo) => {
+          data[`${state}-${algo}`] = generateArray(state);
         });
       });
+      setVisualData(data);
+    }
+  }, [mounted]);
+
+  // togglePlay
+  // check if state and algo are true > run animation function with state and algo
+  // else check if state is true > loop over each algorithm and run animation function with state and algo
+  // else check if algo is true > loop over each state and run animation function with state and algo
+  // else > loop over each state, loop over each algo and run animation function with state and algo
+
+  const togglePlay = (state?: ArrayState, algo?: SortingAlgorithm) => {
+    if (state && algo) {
+      runSortingAnimation(state, algo);
+    } else if (state) {
+      algorithms.forEach((a) => runSortingAnimation(state, a));
+    } else if (algo) {
+      arrayStates.forEach((s) => runSortingAnimation(s, algo));
+    } else {
+      arrayStates.forEach((s) =>
+        algorithms.forEach((a) => runSortingAnimation(s, a)),
+      );
     }
   };
+
+  const runSortingAnimation = (state: ArrayState, algo: SortingAlgorithm) => {
+    const key = `${state}-${algo}`;
+    const data = visualData[key];
+    if (!data) return
+    const steps = sortingAlgorithms[algo](data.slice());
+    setSortingSteps((prev) => ({ ...prev, [key]: steps }));
+    setPlayingStates((prev) => ({ ...prev, [key]: true }));
+
+    let stepIndex = 0;
+    const intervalId = setInterval(() => {
+      if (stepIndex < steps.length) {
+        setVisualData((prev) => ({ ...prev, [key]: steps[stepIndex] }));
+        stepIndex++;
+      } else {
+        clearInterval(intervalId);
+        setPlayingStates((prev) => ({ ...prev, [key]: false }));
+      }
+    }, 50); // Adjust this value to change animation speed
+  };
+
+  // const togglePlay = (state?: ArrayState, algo?: Algorithm) => {
+  //   if (state && algo) {
+  //     setPlayingStates((prev) => ({ ...prev, [`${state}-${algo}`]: true }));
+  //     setTimeout(() => {
+  //       setPlayingStates((prev) => ({ ...prev, [`${state}-${algo}`]: false }));
+  //     }, 2000);
+  //   } else if (state) {
+  //     algorithms.forEach((a) => {
+  //       setPlayingStates((prev) => ({ ...prev, [`${state}-${a}`]: true }));
+  //       setTimeout(() => {
+  //         setPlayingStates((prev) => ({ ...prev, [`${state}-${a}`]: false }));
+  //       }, 2000);
+  //     });
+  //   } else if (algo) {
+  //     arrayStates.forEach((s) => {
+  //       setPlayingStates((prev) => ({ ...prev, [`${s}-${algo}`]: true }));
+  //       setTimeout(() => {
+  //         setPlayingStates((prev) => ({ ...prev, [`${s}-${algo}`]: false }));
+  //       }, 2000);
+  //     });
+  //   } else {
+  //     arrayStates.forEach((s) => {
+  //       algorithms.forEach((a) => {
+  //         setPlayingStates((prev) => ({ ...prev, [`${s}-${a}`]: true }));
+  //         setTimeout(() => {
+  //           setPlayingStates((prev) => ({ ...prev, [`${s}-${a}`]: false }));
+  //         }, 2000);
+  //       });
+  //     });
+  //   }
+  // };
+  //
+  if (!mounted) {
+    return (
+      <div className="p-4 bg-background min-h-screen flex items-center justify-center">
+        <div className="animate-pulse">Loading...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background p-4">
@@ -100,19 +162,15 @@ export default function AlgorithmVisualizer() {
                 {algorithms.map((algo) => (
                   <div
                     key={`${state}-${algo}`}
-                    className="aspect-square cursor-pointer bg-background p-2 transition-colors hover:bg-accent/50"
+                    className="bg-background aspect-square p-2 hover:bg-accent/50 transition-colors cursor-pointer"
                     onClick={() => togglePlay(state, algo)}
-                  >
+                  >                   
                     <BarChart
                       data={visualData[`${state}-${algo}`]}
                       maxValue={30}
                       isPlaying={playingStates[`${state}-${algo}`]}
-                      highlightIndices={
-                        playingStates[`${state}-${algo}`]
-                          ? [Math.floor(Math.random() * 30)]
-                          : []
-                      }
-                      theme={theme}
+                      highlightIndices={[]}
+                      theme={resolvedTheme} 
                     />
                   </div>
                 ))}
