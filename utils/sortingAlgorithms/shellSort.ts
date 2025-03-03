@@ -4,7 +4,7 @@ export function shellSort(arr: number[]) {
   let gap = Math.floor(n / 2)
 
   while (gap > 0) {
-    for (let i = gap; i < n; i++) {  // Changed from n-1 to n
+    for (let i = gap; i < n; i++) {
       let temp = arr[i]
       let j = i
       while (j >= gap && arr[j - gap] > temp) {
@@ -14,7 +14,7 @@ export function shellSort(arr: number[]) {
       arr[j] = temp
       steps.push(arr.slice())
     }
-    gap = Math.floor(gap / 2)  // Added Math.floor()
+    gap = Math.floor(gap / 2)
   }
   return steps
 }
