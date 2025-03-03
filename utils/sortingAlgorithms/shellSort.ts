@@ -7,11 +7,11 @@ export function shellSort(arr: number[]) {
     for (let i = gap; i < n; i++) {
       let temp = arr[i]
       let j = i
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap]
+      while (j >= gap && arr[j - gap]! > temp!) {
+        arr[j] = arr[j - gap] as number
         j = j - gap
       }
-      arr[j] = temp
+      arr[j] = temp as number
       steps.push(arr.slice())
     }
     gap = Math.floor(gap / 2)

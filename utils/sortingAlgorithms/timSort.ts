@@ -24,12 +24,12 @@ function insertionSort(arr: number[], left: number, right: number, steps: number
     const temp = arr[i];
     let j = i - 1;
 
-    while (j >= left && arr[j] > temp) {
-      arr[j + 1] = arr[j];
+    while (j >= left && arr[j]! > temp!) {
+      arr[j + 1] = arr[j] as number
       j--;
     }
 
-    arr[j + 1] = temp;
+    arr[j + 1] = temp as number
     steps.push(arr.slice());
   }
 }
@@ -41,11 +41,11 @@ function merge(arr: number[], left: number, mid: number, right: number, steps: n
   let i = 0, j = 0, k = left;
 
   while (i < leftArray.length && j < rightArray.length) {
-    if (leftArray[i] <= rightArray[j]) {
-      arr[k] = leftArray[i];
+    if (leftArray[i]! <= rightArray[j]!) {
+      arr[k] = leftArray[i] as number
       i++;
     } else {
-      arr[k] = rightArray[j];
+      arr[k] = rightArray[j] as number
       j++;
     }
     k++;
@@ -53,14 +53,14 @@ function merge(arr: number[], left: number, mid: number, right: number, steps: n
   }
 
   while (i < leftArray.length) {
-    arr[k] = leftArray[i];
+    arr[k] = leftArray[i] as number
     i++;
     k++;
     steps.push(arr.slice());
   }
 
   while (j < rightArray.length) {
-    arr[k] = rightArray[j];
+    arr[k] = rightArray[j] as number
     j++;
     k++;
     steps.push(arr.slice());
