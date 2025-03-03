@@ -85,14 +85,14 @@ export default function AlgorithmVisualizer() {
 
   if (!mounted) {
     return (
-      <div className="p-4 bg-background min-h-screen flex items-center justify-center">
+      <div className="p-4 bg-background flex items-center justify-center">
         <div className="animate-pulse">Loading...</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background p-4">
+    <div className=" bg-background p-4">
       {Object.keys(visualData).length > 0 && (
         <div className="mx-auto max-w-[1200px]">
           {/* Header row */}
@@ -132,13 +132,13 @@ export default function AlgorithmVisualizer() {
                     key={`${state}-${algo}`}
                     className="bg-background aspect-square p-2 hover:bg-accent/50 transition-colors cursor-pointer"
                     onClick={() => togglePlay(state, algo)}
-                  >                   
+                  >
                     <BarChart
                       data={visualData[`${state}-${algo}`]}
                       maxValue={30}
                       isPlaying={playingStates[`${state}-${algo}`]}
                       highlightIndices={[]}
-                      theme={resolvedTheme} 
+                      theme={resolvedTheme}
                     />
                   </div>
                 ))}
