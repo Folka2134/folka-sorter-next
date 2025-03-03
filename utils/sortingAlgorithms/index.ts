@@ -6,19 +6,17 @@ import { mergeSort } from "./mergeSort"
 import { shellSort } from "./shellSort"
 import { heapSort } from "./heapSort"
 import { quickSort } from "./quickSort"
-import { countingSort } from "./countingSort"
 import { timSort } from "./timSort"
 
 export const sortingAlgorithms = {
-  insertion: insertionSort,
+  bubble: bubbleSort,
   shell: shellSort,
   selection: selectionSort,
-  bubble: bubbleSort,
+  insertion: insertionSort,
   merge: mergeSort,
+  tim: timSort,
   heap: heapSort,
   quick: quickSort,
-  // counting: countingSort,
-  tim: timSort,
 }
 
 export type SortingAlgorithm = keyof typeof sortingAlgorithms
