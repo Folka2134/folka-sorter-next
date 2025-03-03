@@ -43,12 +43,6 @@ export default function AlgorithmVisualizer() {
     }
   }, [mounted]);
 
-  // togglePlay
-  // check if state and algo are true > run animation function with state and algo
-  // else check if state is true > loop over each algorithm and run animation function with state and algo
-  // else check if algo is true > loop over each state and run animation function with state and algo
-  // else > loop over each state, loop over each algo and run animation function with state and algo
-
   const togglePlay = (state?: ArrayState, algo?: SortingAlgorithm) => {
     if (state && algo) {
       runSortingAnimation(state, algo);
@@ -66,7 +60,8 @@ export default function AlgorithmVisualizer() {
   const runSortingAnimation = (state: ArrayState, algo: SortingAlgorithm) => {
     const key = `${state}-${algo}`;
     const data = visualData[key];
-    if (!data) return
+    if (!data) return;
+
     const steps = sortingAlgorithms[algo](data.slice());
     setSortingSteps((prev) => ({ ...prev, [key]: steps }));
     setPlayingStates((prev) => ({ ...prev, [key]: true }));
@@ -74,7 +69,17 @@ export default function AlgorithmVisualizer() {
     let stepIndex = 0;
     const intervalId = setInterval(() => {
       if (stepIndex < steps.length) {
-        setVisualData((prev) => ({ ...prev, [key]: steps[stepIndex] }));
+        const currentStep = steps[stepIndex];
+
+        // Only update if currentStep is defined
+        if (currentStep) {
+          setVisualData((prev) => {
+            const newData = { ...prev };
+            newData[key] = currentStep;
+            return newData;
+          });
+        }
+
         stepIndex++;
       } else {
         clearInterval(intervalId);

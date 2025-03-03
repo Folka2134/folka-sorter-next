@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 interface BarChartProps {
-  data: number[];
+  data: number[] | undefined;
   maxValue: number;
   isPlaying?: boolean;
   highlightIndices?: number[];
